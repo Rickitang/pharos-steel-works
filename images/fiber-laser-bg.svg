@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 800">
+  <defs>
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3d3d3d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="laserGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b00;stop-opacity:0" />
+      <stop offset="50%" style="stop-color:#ff6b00;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ff6b00;stop-opacity:0" />
+    </linearGradient>
+    <radialGradient id="sparkGrad">
+      <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#ffa500;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ff6b00;stop-opacity:0" />
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+    </filter>
+  </defs>
+  
+  <!-- Dark industrial background -->
+  <rect width="1920" height="800" fill="#0a0a0a"/>
+  
+  <!-- Grid pattern overlay -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="800" fill="url(#grid)" opacity="0.3"/>
+  
+  <!-- Laser cutting machine structure -->
+  <!-- Base platform -->
+  <rect x="200" y="600" width="1520" height="150" fill="url(#metalGrad)" stroke="#555" stroke-width="2"/>
+  <rect x="220" y="620" width="1480" height="20" fill="#1a1a1a" opacity="0.8"/>
+  
+  <!-- Machine frame left -->
+  <rect x="300" y="200" width="100" height="400" fill="url(#metalGrad)" stroke="#555" stroke-width="2"/>
+  <rect x="320" y="220" width="60" height="360" fill="#252525"/>
+  
+  <!-- Machine frame right -->
+  <rect x="1520" y="200" width="100" height="400" fill="url(#metalGrad)" stroke="#555" stroke-width="2"/>
+  <rect x="1540" y="220" width="60" height="360" fill="#252525"/>
+  
+  <!-- Top beam -->
+  <rect x="300" y="180" width="1320" height="60" fill="url(#metalGrad)" stroke="#555" stroke-width="3"/>
+  <rect x="320" y="195" width="1280" height="30" fill="#2a2a2a"/>
+  
+  <!-- Laser head assembly -->
+  <g id="laserHead">
+    <!-- Rail system -->
+    <rect x="320" y="195" width="1280" height="15" fill="#333" stroke="#555" stroke-width="1"/>
+    
+    <!-- Laser head carriage -->
+    <rect x="850" y="160" width="220" height="80" fill="url(#metalGrad)" stroke="#666" stroke-width="2"/>
+    <rect x="870" y="175" width="180" height="50" fill="#1a1a1a"/>
+    
+    <!-- Laser nozzle -->
+    <rect x="940" y="240" width="40" height="120" fill="url(#metalGrad)" stroke="#555" stroke-width="2"/>
+    <polygon points="930,360 970,360 965,380 935,380" fill="#2a2a2a" stroke="#555" stroke-width="1"/>
+    <circle cx="950" cy="375" r="8" fill="#1a1a1a" stroke="#ff6b00" stroke-width="2"/>
+    
+    <!-- Cables and hoses -->
+    <path d="M 900 180 Q 880 140 850 120" fill="none" stroke="#333" stroke-width="6"/>
+    <path d="M 920 180 Q 900 140 870 120" fill="none" stroke="#444" stroke-width="5"/>
+    <path d="M 1000 180 Q 1020 140 1050 120" fill="none" stroke="#333" stroke-width="6"/>
+  </g>
+  
+  <!-- Cutting bed -->
+  <rect x="450" y="480" width="1020" height="120" fill="#1a1a1a" stroke="#555" stroke-width="2"/>
+  
+  <!-- Metal sheet being cut -->
+  <rect x="500" y="500" width="920" height="80" fill="#5a5a5a" stroke="#888" stroke-width="1" opacity="0.9"/>
+  
+  <!-- Cut pattern on sheet -->
+  <path d="M 600 520 L 800 520 L 800 560 L 600 560 Z" fill="none" stroke="#ff6b00" stroke-width="2" opacity="0.6"/>
+  <path d="M 850 525 L 1050 525" fill="none" stroke="#ff6b00" stroke-width="2" opacity="0.6"/>
+  <path d="M 1100 530 L 1300 530 L 1300 555 L 1100 555 Z" fill="none" stroke="#ff6b00" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Active laser beam -->
+  <line x1="950" y1="380" x2="950" y2="500" stroke="url(#laserGlow)" stroke-width="4" opacity="0.9"/>
+  <line x1="950" y1="380" x2="950" y2="500" stroke="#ff6b00" stroke-width="2" opacity="1"/>
+  <circle cx="950" cy="500" r="15" fill="url(#sparkGrad)" opacity="0.8"/>
+  
+  <!-- Sparks -->
+  <circle cx="945" cy="498" r="3" fill="#fff" opacity="0.9"/>
+  <circle cx="955" cy="502" r="2" fill="#ffa500" opacity="0.8"/>
+  <circle cx="948" cy="505" r="2" fill="#ff6b00" opacity="0.7"/>
+  <circle cx="960" cy="495" r="2" fill="#fff" opacity="0.8"/>
+  <circle cx="940" cy="503" r="2" fill="#ffa500" opacity="0.7"/>
+  
+  <!-- Glow effects around laser point -->
+  <circle cx="950" cy="500" r="25" fill="url(#sparkGrad)" opacity="0.4" filter="url(#blur)"/>
+  <circle cx="950" cy="500" r="40" fill="url(#sparkGrad)" opacity="0.2" filter="url(#blur)"/>
+  
+  <!-- Control panel -->
+  <rect x="1600" y="350" width="100" height="200" fill="url(#metalGrad)" stroke="#555" stroke-width="2"/>
+  <rect x="1615" y="370" width="70" height="50" fill="#0a3d0a" opacity="0.8"/>
+  <circle cx="1630" cy="440" r="8" fill="#00ff00" opacity="0.6"/>
+  <circle cx="1660" cy="440" r="8" fill="#ff6b00" opacity="0.8"/>
+  <circle cx="1645" cy="470" r="12" fill="#ff0000" opacity="0.4"/>
+  
+  <!-- Warning stripes on machine -->
+  <rect x="300" y="590" width="40" height="10" fill="#ffcc00" opacity="0.7"/>
+  <rect x="340" y="590" width="40" height="10" fill="#1a1a1a" opacity="0.7"/>
+  <rect x="1580" y="590" width="40" height="10" fill="#ffcc00" opacity="0.7"/>
+  <rect x="1620" y="590" width="40" height="10" fill="#1a1a1a" opacity="0.7"/>
+  
+  <!-- Ambient lighting effects -->
+  <rect width="1920" height="800" fill="url(#laserGlow)" opacity="0.05"/>
+  
+  <!-- Industrial floor -->
+  <rect y="750" width="1920" height="50" fill="#0d0d0d"/>
+  <line x1="0" y1="750" x2="1920" y2="750" stroke="#ff6b00" stroke-width="1" opacity="0.3"/>
+</svg>
