@@ -987,6 +987,14 @@ body {
         text-align: center;
     }
 
+    .nav .btn-primary {
+        color: var(--text-light);
+    }
+
+    .nav .btn-outline {
+        color: var(--text-light);
+    }
+
     .nav .btn-outline:hover {
         background-color: var(--primary-color);
         color: var(--text-light);
