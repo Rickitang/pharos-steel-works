@@ -965,6 +965,7 @@ body {
         padding: 0.75rem 0;
         font-size: 1.1rem;
         border-bottom: 1px solid var(--border-color);
+        color: var(--text-light);
     }
 
     .nav a::after {
@@ -977,6 +978,7 @@ body {
         gap: 0.75rem;
         margin-top: 1rem;
         padding-top: 1rem;
+        padding-bottom: 2rem;
         border-top: 2px solid var(--border-color);
     }
 
