@@ -426,11 +426,12 @@
             
             <div class="contact-grid">
                 <div class="contact-form">
-                    <form id="contactForm" name="contact" method="POST" action="/index.html#contact" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
-                        <input type="hidden" name="form-name" value="contact">
-                        <p class="hidden">
-                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-                        </p>
+                    <form id="contactForm" action="https://formsubmit.co/info@pharossteeldesign.co.za" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="_subject" value="New quote request from Pharos Steel Works">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="https://pharossteelworks.co.za/#contact">
+                        <input type="text" name="_honey" style="display:none">
                         <div class="form-group">
                             <input type="text" id="name" name="name" placeholder="Your Name" required minlength="2" maxlength="100">
                         </div>
