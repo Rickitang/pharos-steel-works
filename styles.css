@@ -975,16 +975,22 @@ body {
     .header-buttons {
         flex-direction: column;
         width: 100%;
-        gap: 0.75rem;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        padding-bottom: 4rem;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        padding-bottom: 5rem;
         border-top: 2px solid var(--border-color);
     }
 
     .header-buttons .btn {
         width: 100%;
         text-align: center;
+    }
+
+    .nav .btn-outline:hover {
+        background-color: var(--primary-color);
+        color: var(--text-light);
+        border-color: var(--primary-color);
     }
 
     .contact-grid {
