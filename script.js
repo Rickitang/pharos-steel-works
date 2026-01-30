@@ -29,30 +29,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form submission handler (for local testing)
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        // Check if running locally
-        if (window.location.protocol === 'file:') {
-            e.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                message: document.getElementById('message').value
-            };
-            
-            // Show success message for local testing
-            alert(`Form submitted successfully!\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nMessage: ${formData.message}\n\nNote: When hosted on a web server, this will send to info@pharossteeldesign.co.za`);
-            
-            // Reset form
-            this.reset();
-        }
-        // If on web server, FormSubmit will handle it normally
-    });
-}
+// Form submission handler removed - Netlify Forms handles submission
 
 // Add active state to navigation based on scroll position (debounced)
 const updateActiveNav = debounce(function() {
