@@ -210,7 +210,7 @@ body {
 .hamburger {
     width: 30px;
     height: 3px;
-    background-color: var(--text-light);
+    background-color: var(--primary-color);
     border-radius: 2px;
     transition: all 0.3s ease;
 }
