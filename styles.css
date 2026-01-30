@@ -611,6 +611,45 @@ body {
     resize: vertical;
 }
 
+.file-input {
+    padding: 0.7rem !important;
+    cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+    background-color: #1557b0;
+    transform: translateY(-1px);
+}
+
+.file-input::file-selector-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.file-input::file-selector-button:hover {
+    background-color: #1557b0;
+    transform: translateY(-1px);
+}
+
 .checkbox-label {
     display: flex;
     align-items: center;
