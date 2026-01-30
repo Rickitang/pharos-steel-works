@@ -583,6 +583,10 @@ body {
     box-shadow: var(--shadow);
 }
 
+.hidden {
+    display: none;
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
