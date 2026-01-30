@@ -243,14 +243,14 @@ body {
 
 .btn-primary {
     background-color: var(--primary-color);
-    color: var(--text-light);
+    color: #ffffff !important;
     border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
     background-color: #1557b0;
     border-color: #1557b0;
-    color: var(--text-light);
+    color: #ffffff !important;
     transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
