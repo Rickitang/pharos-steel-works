@@ -129,9 +129,11 @@ body {
 }
 
 .logo-img {
-    height: 45px;
+    height: 80px;
+    max-height: 80px;
     width: auto;
-    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.4));
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.45));
     transition: transform 0.3s ease;
 }
 
@@ -814,8 +816,10 @@ body {
 }
 
 .footer-logo-img {
-    height: 40px;
+    height: 64px;
+    max-height: 64px;
     width: auto;
+    object-fit: contain;
 }
 
 .footer-logo h3 {
