@@ -1,4 +1,42 @@
-// Utility: Debounce function for performance
+/* ============================================================================
+   PHAROS STEEL WORKS - MAIN SCRIPT
+   Modular and maintainable JavaScript for website functionality
+   ============================================================================ */
+
+/* ============================================================================
+   CONSTANTS & CONFIGURATION
+   ============================================================================ */
+const CONFIG = {
+    debounceDelay: 100,
+    scrollOffset: 200,
+    animationThreshold: 0.1,
+    animationRootMargin: '0px 0px -50px 0px'
+};
+
+const SELECTORS = {
+    mobileMenuToggle: '.mobile-menu-toggle',
+    nav: '.nav',
+    navLinks: '.nav a',
+    anchors: 'a[href^="#"]',
+    sections: 'section[id]',
+    animatedElements: '.service-card, .feature-card, .contact-card, .industry-card, .stat-item'
+};
+
+const CLASSES = {
+    active: 'active',
+    animateElement: 'animate-element',
+    animateIn: 'animate-in'
+};
+
+/* ============================================================================
+   UTILITY FUNCTIONS
+   ============================================================================ */
+/**
+ * Debounce function for performance optimization
+ * @param {Function} func - Function to debounce
+ * @param {Number} wait - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
 const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
@@ -7,116 +45,163 @@ const debounce = (func, wait) => {
     };
 };
 
-// Mobile menu toggle
-const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-const nav = document.querySelector('.nav');
-const navLinks = document.querySelectorAll('.nav a');
+/**
+ * Check if user prefers reduced motion
+ * @returns {Boolean} True if user prefers reduced motion
+ */
+const prefersReducedMotion = () => {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
 
-if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileMenuToggle.classList.toggle('active');
-        nav.classList.toggle('active');
+/**
+ * Toggle body scroll
+ * @param {Boolean} enable - Enable or disable scroll
+ */
+const toggleBodyScroll = (enable) => {
+    document.body.style.overflow = enable ? '' : 'hidden';
+};
+
+/* ============================================================================
+   MOBILE NAVIGATION
+   ============================================================================ */
+const initMobileMenu = () => {
+    const mobileMenuToggle = document.querySelector(SELECTORS.mobileMenuToggle);
+    const nav = document.querySelector(SELECTORS.nav);
+    const navLinks = document.querySelectorAll(SELECTORS.navLinks);
+
+    if (!mobileMenuToggle || !nav) return;
+
+    /**
+     * Toggle mobile menu state
+     */
+    const toggleMenu = (forceClose = false) => {
+        const isOpen = forceClose ? true : nav.classList.contains(CLASSES.active);
         
-        // Update aria-expanded
-        const isExpanded = nav.classList.contains('active');
-        mobileMenuToggle.setAttribute('aria-expanded', isExpanded);
-        
-        // Prevent body scroll when menu is open
-        document.body.style.overflow = isExpanded ? 'hidden' : '';
-    });
+        mobileMenuToggle.classList.toggle(CLASSES.active, !isOpen);
+        nav.classList.toggle(CLASSES.active, !isOpen);
+        mobileMenuToggle.setAttribute('aria-expanded', !isOpen);
+        toggleBodyScroll(isOpen);
+    };
+
+    // Toggle menu on button click
+    mobileMenuToggle.addEventListener('click', () => toggleMenu());
 
     // Close menu when clicking nav links
     navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenuToggle.classList.remove('active');
-            nav.classList.remove('active');
-            mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', () => toggleMenu(true));
     });
 
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            mobileMenuToggle.classList.remove('active');
-            nav.classList.remove('active');
-            mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+            toggleMenu(true);
         }
     });
-}
+};
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const target = document.querySelector(targetId);
-        if (target) {
-            // Check if user prefers reduced motion
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ============================================================================
+   SMOOTH SCROLLING & NAVIGATION
+   ============================================================================ */
+const initSmoothScrolling = () => {
+    const anchors = document.querySelectorAll(SELECTORS.anchors);
+
+    anchors.forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
             
+            const targetId = this.getAttribute('href');
+            const target = document.querySelector(targetId);
+            
+            if (!target) return;
+
             target.scrollIntoView({
-                behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth',
                 block: 'start'
             });
-            
+
             // Set focus to target for accessibility
             target.setAttribute('tabindex', '-1');
             target.focus();
-        }
+        });
     });
-});
+};
 
-// Form submission handler removed - Netlify Forms handles submission
-
-// Add active state to navigation based on scroll position (debounced)
+/**
+ * Update active navigation based on scroll position
+ */
 const updateActiveNav = debounce(function() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav a');
+    const sections = document.querySelectorAll(SELECTORS.sections);
+    const navLinks = document.querySelectorAll(SELECTORS.navLinks);
     
     let current = '';
     const scrollPos = window.scrollY;
-    
+
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
-        if (scrollPos >= (sectionTop - 200)) {
+        
+        if (scrollPos >= (sectionTop - CONFIG.scrollOffset)) {
             current = section.getAttribute('id');
         }
     });
-    
+
     navLinks.forEach(link => {
-        link.classList.remove('active');
+        link.classList.remove(CLASSES.active);
         if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
+            link.classList.add(CLASSES.active);
         }
     });
-}, 100);
+}, CONFIG.debounceDelay);
 
-window.addEventListener('scroll', updateActiveNav, { passive: true });
+/* ============================================================================
+   SCROLL ANIMATIONS
+   ============================================================================ */
+const initScrollAnimations = () => {
+    const observerOptions = {
+        threshold: CONFIG.animationThreshold,
+        rootMargin: CONFIG.animationRootMargin
+    };
 
-// Add animation on scroll using Intersection Observer
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add(CLASSES.animateIn);
+                observer.unobserve(entry.target); // Stop observing once animated
+            }
+        });
+    }, observerOptions);
 
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-            observer.unobserve(entry.target); // Stop observing once animated
-        }
-    });
-}, observerOptions);
-
-// Initialize animations on DOM load
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.service-card, .feature-card, .contact-card, .industry-card, .stat-item');
+    const animatedElements = document.querySelectorAll(SELECTORS.animatedElements);
     
     animatedElements.forEach(el => {
-        el.classList.add('animate-element');
+        el.classList.add(CLASSES.animateElement);
         observer.observe(el);
     });
-});
+};
+
+/* ============================================================================
+   EVENT LISTENERS
+   ============================================================================ */
+const initEventListeners = () => {
+    // Scroll event for active navigation
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+};
+
+/* ============================================================================
+   INITIALIZATION
+   ============================================================================ */
+const init = () => {
+    initMobileMenu();
+    initSmoothScrolling();
+    initEventListeners();
+    
+    // Initialize animations after DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollAnimations);
+    } else {
+        initScrollAnimations();
+    }
+};
+
+// Start the application
+init();
