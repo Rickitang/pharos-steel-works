@@ -217,6 +217,15 @@ const initContactForm = () => {
         statusElement.hidden = true;
     };
 
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('submitted') === '1') {
+        showStatus('Thanks, your form was submitted successfully. We will contact you soon.', 'success');
+        urlParams.delete('submitted');
+        const updatedQuery = urlParams.toString();
+        const updatedUrl = `${window.location.pathname}${updatedQuery ? `?${updatedQuery}` : ''}${window.location.hash}`;
+        window.history.replaceState({}, document.title, updatedUrl);
+    }
+
     if (fileInput) {
         fileInput.addEventListener('change', () => {
             clearStatus();
