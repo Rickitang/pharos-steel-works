@@ -229,13 +229,15 @@ const initContactForm = () => {
     if (fileInput) {
         fileInput.addEventListener('change', () => {
             clearStatus();
-            const selectedFile = fileInput.files && fileInput.files[0];
+            const selectedFiles = fileInput.files ? Array.from(fileInput.files) : [];
 
-            if (!selectedFile) return;
+            if (!selectedFiles.length) return;
 
-            if (selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+            const totalFileSize = selectedFiles.reduce((total, file) => total + file.size, 0);
+
+            if (totalFileSize > FORM_CONFIG.maxFileSizeBytes) {
                 fileInput.value = '';
-                showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
+                showStatus('Selected files exceed the 10MB total limit. Please upload smaller files.', 'error');
             }
         });
     }
@@ -243,10 +245,12 @@ const initContactForm = () => {
     form.addEventListener('submit', async (event) => {
         clearStatus();
 
-        const selectedFile = fileInput && fileInput.files && fileInput.files[0];
-        if (selectedFile && selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+        const selectedFiles = fileInput && fileInput.files ? Array.from(fileInput.files) : [];
+        const totalFileSize = selectedFiles.reduce((total, file) => total + file.size, 0);
+
+        if (totalFileSize > FORM_CONFIG.maxFileSizeBytes) {
             event.preventDefault();
-            showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
+            showStatus('Selected files exceed the 10MB total limit. Please upload smaller files.', 'error');
             return;
         }
 
@@ -256,7 +260,7 @@ const initContactForm = () => {
             return;
         }
 
-        const hasAttachment = !!selectedFile;
+        const hasAttachment = selectedFiles.length > 0;
         const originalButtonText = submitButton ? submitButton.textContent : '';
         if (submitButton) {
             submitButton.disabled = true;
