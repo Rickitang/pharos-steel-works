@@ -201,7 +201,7 @@ const initContactForm = () => {
 
     if (!form || !statusElement) return;
 
-    const fileInput = form.querySelector('#attachment');
+    const attachmentInputs = Array.from(form.querySelectorAll('input[type="file"][data-attachment="true"]'));
     const submitButton = form.querySelector('button[type="submit"]');
 
     const showStatus = (message, type) => {
@@ -226,26 +226,32 @@ const initContactForm = () => {
         window.history.replaceState({}, document.title, updatedUrl);
     }
 
-    if (fileInput) {
-        fileInput.addEventListener('change', () => {
+    const getSelectedFiles = () => {
+        return attachmentInputs.flatMap(input => (input.files ? Array.from(input.files) : []));
+    };
+
+    if (attachmentInputs.length) {
+        attachmentInputs.forEach(input => {
+            input.addEventListener('change', (changeEvent) => {
             clearStatus();
-            const selectedFiles = fileInput.files ? Array.from(fileInput.files) : [];
+            const selectedFiles = getSelectedFiles();
 
             if (!selectedFiles.length) return;
 
             const totalFileSize = selectedFiles.reduce((total, file) => total + file.size, 0);
 
             if (totalFileSize > FORM_CONFIG.maxFileSizeBytes) {
-                fileInput.value = '';
+                changeEvent.target.value = '';
                 showStatus('Selected files exceed the 10MB total limit. Please upload smaller files.', 'error');
             }
+        });
         });
     }
 
     form.addEventListener('submit', async (event) => {
         clearStatus();
 
-        const selectedFiles = fileInput && fileInput.files ? Array.from(fileInput.files) : [];
+        const selectedFiles = getSelectedFiles();
         const totalFileSize = selectedFiles.reduce((total, file) => total + file.size, 0);
 
         if (totalFileSize > FORM_CONFIG.maxFileSizeBytes) {

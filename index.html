@@ -464,9 +464,11 @@
                             <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="attachment" style="display: block; margin-bottom: 0.5rem; color: var(--text-gray); font-size: 0.95rem;">Attach File (Optional)</label>
-                            <input type="file" id="attachment" name="attachment" accept=".dxf,.dwg,.jpg,.jpeg,.png,.pdf" class="file-input" multiple>
-                            <small style="display: block; margin-top: 0.5rem; color: var(--text-gray); font-size: 0.85rem;">Accepted formats: DXF, DWG, JPG, JPEG, PNG, PDF (Combined max 10MB)</small>
+                            <label for="attachment-1" style="display: block; margin-bottom: 0.5rem; color: var(--text-gray); font-size: 0.95rem;">Attach Files (Optional)</label>
+                            <input type="file" id="attachment-1" name="attachment_1" accept=".dxf,.dwg,.jpg,.jpeg,.png,.pdf" class="file-input" data-attachment="true">
+                            <input type="file" id="attachment-2" name="attachment_2" accept=".dxf,.dwg,.jpg,.jpeg,.png,.pdf" class="file-input" data-attachment="true" style="margin-top: 0.6rem;">
+                            <input type="file" id="attachment-3" name="attachment_3" accept=".dxf,.dwg,.jpg,.jpeg,.png,.pdf" class="file-input" data-attachment="true" style="margin-top: 0.6rem;">
+                            <small style="display: block; margin-top: 0.5rem; color: var(--text-gray); font-size: 0.85rem;">Accepted formats: DXF, DWG, JPG, JPEG, PNG, PDF (up to 3 files, combined max 10MB)</small>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
