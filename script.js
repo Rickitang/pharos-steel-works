@@ -270,7 +270,7 @@ const initContactForm = () => {
             if (error.name === 'AbortError') {
                 showStatus('Connection timed out. Please try again or contact us on WhatsApp.', 'error');
             } else {
-                showStatus('Could not send your message right now. Please try again in a moment.', 'error');
+                showStatus('Could not send your message right now. Please try again in a moment or Email us directly at carlo@pharosimportandexport.com', 'error');
             }
         } finally {
             window.clearTimeout(timeoutId);
