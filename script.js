@@ -29,7 +29,6 @@ const CLASSES = {
 };
 
 const FORM_CONFIG = {
-    timeoutMs: 25000,
     maxFileSizeBytes: 10 * 1024 * 1024
 };
 
@@ -231,54 +230,25 @@ const initContactForm = () => {
         });
     }
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
+    form.addEventListener('submit', (event) => {
         clearStatus();
 
         const selectedFile = fileInput && fileInput.files && fileInput.files[0];
         if (selectedFile && selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+            event.preventDefault();
             showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
             return;
         }
 
-        const originalButtonText = submitButton ? submitButton.textContent : '';
+        if (!navigator.onLine) {
+            event.preventDefault();
+            showStatus('You appear to be offline. Please reconnect and try again.', 'error');
+            return;
+        }
+
         if (submitButton) {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
-        }
-
-        const controller = new AbortController();
-        const timeoutId = window.setTimeout(() => controller.abort(), FORM_CONFIG.timeoutMs);
-
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    Accept: 'application/json'
-                },
-                signal: controller.signal
-            });
-
-            if (!response.ok) {
-                throw new Error('Form submission failed');
-            }
-
-            form.reset();
-            showStatus('Thanks, your message was sent successfully. We will contact you soon.', 'success');
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                showStatus('Connection timed out. Please try again or contact us on WhatsApp.', 'error');
-            } else {
-                showStatus('Could not send your message right now. Please try again in a moment or Email us directly at carlo@pharosimportandexport.com', 'error');
-            }
-        } finally {
-            window.clearTimeout(timeoutId);
-
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
-            }
         }
     });
 };
