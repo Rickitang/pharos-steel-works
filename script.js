@@ -28,6 +28,11 @@ const CLASSES = {
     animateIn: 'animate-in'
 };
 
+const FORM_CONFIG = {
+    timeoutMs: 25000,
+    maxFileSizeBytes: 10 * 1024 * 1024
+};
+
 /* ============================================================================
    UTILITY FUNCTIONS
    ============================================================================ */
@@ -188,12 +193,104 @@ const initEventListeners = () => {
 };
 
 /* ============================================================================
+   CONTACT FORM
+   ============================================================================ */
+const initContactForm = () => {
+    const form = document.getElementById('contactForm');
+    const statusElement = document.getElementById('formStatus');
+
+    if (!form || !statusElement) return;
+
+    const fileInput = form.querySelector('#attachment');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const showStatus = (message, type) => {
+        statusElement.textContent = message;
+        statusElement.classList.remove('success', 'error');
+        statusElement.classList.add(type);
+        statusElement.hidden = false;
+    };
+
+    const clearStatus = () => {
+        statusElement.textContent = '';
+        statusElement.classList.remove('success', 'error');
+        statusElement.hidden = true;
+    };
+
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            clearStatus();
+            const selectedFile = fileInput.files && fileInput.files[0];
+
+            if (!selectedFile) return;
+
+            if (selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+                fileInput.value = '';
+                showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
+            }
+        });
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearStatus();
+
+        const selectedFile = fileInput && fileInput.files && fileInput.files[0];
+        if (selectedFile && selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+            showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
+            return;
+        }
+
+        const originalButtonText = submitButton ? submitButton.textContent : '';
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+        }
+
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), FORM_CONFIG.timeoutMs);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    Accept: 'application/json'
+                },
+                signal: controller.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('Form submission failed');
+            }
+
+            form.reset();
+            showStatus('Thanks, your message was sent successfully. We will contact you soon.', 'success');
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                showStatus('Connection timed out. Please try again or contact us on WhatsApp.', 'error');
+            } else {
+                showStatus('Could not send your message right now. Please try again in a moment.', 'error');
+            }
+        } finally {
+            window.clearTimeout(timeoutId);
+
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        }
+    });
+};
+
+/* ============================================================================
    INITIALIZATION
    ============================================================================ */
 const init = () => {
     initMobileMenu();
     initSmoothScrolling();
     initEventListeners();
+    initContactForm();
     
     // Initialize animations after DOM is loaded
     if (document.readyState === 'loading') {
