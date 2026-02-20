@@ -201,7 +201,7 @@ const initContactForm = () => {
 
     if (!form || !statusElement) return;
 
-    const attachmentInputs = Array.from(form.querySelectorAll('input[type="file"][data-attachment="true"]'));
+    const attachmentInput = form.querySelector('input[type="file"][data-attachment="true"]');
     const submitButton = form.querySelector('button[type="submit"]');
 
     const showStatus = (message, type) => {
@@ -226,13 +226,39 @@ const initContactForm = () => {
         window.history.replaceState({}, document.title, updatedUrl);
     }
 
+    const generatedAttachmentSelector = 'input[data-generated-attachment="true"]';
+
     const getSelectedFiles = () => {
-        return attachmentInputs.flatMap(input => (input.files ? Array.from(input.files) : []));
+        if (!attachmentInput || !attachmentInput.files) return [];
+        return Array.from(attachmentInput.files);
     };
 
-    if (attachmentInputs.length) {
-        attachmentInputs.forEach(input => {
-            input.addEventListener('change', (changeEvent) => {
+    const clearGeneratedAttachmentInputs = () => {
+        form.querySelectorAll(generatedAttachmentSelector).forEach(input => input.remove());
+    };
+
+    const prepareGeneratedAttachmentInputs = (files) => {
+        clearGeneratedAttachmentInputs();
+
+        if (!files.length || !attachmentInput) return;
+
+        files.forEach((file, index) => {
+            const generatedInput = document.createElement('input');
+            generatedInput.type = 'file';
+            generatedInput.name = `attachment_${index + 1}`;
+            generatedInput.setAttribute('data-generated-attachment', 'true');
+            generatedInput.hidden = true;
+
+            const fileTransfer = new DataTransfer();
+            fileTransfer.items.add(file);
+            generatedInput.files = fileTransfer.files;
+
+            form.appendChild(generatedInput);
+        });
+    };
+
+    if (attachmentInput) {
+        attachmentInput.addEventListener('change', (changeEvent) => {
             clearStatus();
             const selectedFiles = getSelectedFiles();
 
@@ -244,7 +270,6 @@ const initContactForm = () => {
                 changeEvent.target.value = '';
                 showStatus('Selected files exceed the 10MB total limit. Please upload smaller files.', 'error');
             }
-        });
         });
     }
 
@@ -274,6 +299,22 @@ const initContactForm = () => {
         }
 
         if (hasAttachment) {
+            if (typeof DataTransfer === 'undefined') {
+                event.preventDefault();
+
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+
+                showStatus('Your browser does not support multi-file upload here. Please upload one file at a time, WhatsApp us, or email carlo@pharosimportandexport.com.', 'error');
+                return;
+            }
+
+            prepareGeneratedAttachmentInputs(selectedFiles);
+            if (attachmentInput) {
+                attachmentInput.disabled = true;
+            }
             return;
         }
 
