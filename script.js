@@ -232,25 +232,33 @@ const initContactForm = () => {
     }
 
     form.addEventListener('submit', async (event) => {
-        event.preventDefault();
         clearStatus();
 
         const selectedFile = fileInput && fileInput.files && fileInput.files[0];
         if (selectedFile && selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
+            event.preventDefault();
             showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
             return;
         }
 
         if (!navigator.onLine) {
+            event.preventDefault();
             showStatus('You appear to be offline. Please reconnect and try again.', 'error');
             return;
         }
 
+        const hasAttachment = !!selectedFile;
         const originalButtonText = submitButton ? submitButton.textContent : '';
         if (submitButton) {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
         }
+
+        if (hasAttachment) {
+            return;
+        }
+
+        event.preventDefault();
 
         const controller = new AbortController();
         const timeoutId = window.setTimeout(() => controller.abort(), FORM_CONFIG.timeoutMs);
