@@ -29,7 +29,8 @@ const CLASSES = {
 };
 
 const FORM_CONFIG = {
-    maxFileSizeBytes: 10 * 1024 * 1024
+    maxFileSizeBytes: 10 * 1024 * 1024,
+    timeoutMs: 25000
 };
 
 /* ============================================================================
@@ -230,25 +231,62 @@ const initContactForm = () => {
         });
     }
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
         clearStatus();
 
         const selectedFile = fileInput && fileInput.files && fileInput.files[0];
         if (selectedFile && selectedFile.size > FORM_CONFIG.maxFileSizeBytes) {
-            event.preventDefault();
             showStatus('Attachment is larger than 10MB. Please upload a smaller file.', 'error');
             return;
         }
 
         if (!navigator.onLine) {
-            event.preventDefault();
             showStatus('You appear to be offline. Please reconnect and try again.', 'error');
             return;
         }
 
+        const originalButtonText = submitButton ? submitButton.textContent : '';
         if (submitButton) {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
+        }
+
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), FORM_CONFIG.timeoutMs);
+
+        try {
+            const actionUrl = new URL(form.action);
+            const ajaxEndpoint = `${actionUrl.origin}/ajax${actionUrl.pathname}`;
+
+            const response = await fetch(ajaxEndpoint, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    Accept: 'application/json'
+                },
+                signal: controller.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('Form submission failed');
+            }
+
+            form.reset();
+            showStatus('Thanks, your message was sent successfully. We will contact you soon.', 'success');
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                showStatus('Connection timed out. Please try again, WhatsApp us at +27 60 522 0559, or Email us directly at carlo@pharosimportandexport.com', 'error');
+            } else {
+                showStatus('Could not send your message right now. Please try again in a moment, WhatsApp us at +27 60 522 0559, or Email us directly at carlo@pharosimportandexport.com', 'error');
+            }
+        } finally {
+            window.clearTimeout(timeoutId);
+
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
         }
     });
 };
